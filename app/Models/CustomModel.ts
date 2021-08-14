@@ -1,6 +1,7 @@
-import { BaseModel } from '@ioc:Adonis/Lucid/Orm'
+import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm'
 import { beforeFind, beforeFetch } from '@ioc:Adonis/Lucid/Orm'
-import { softDelete, softDeleteQuery, softTest } from '../Services/AdonisSoftDelete'
+import { DateTime } from 'luxon'
+import { softDelete, softDeleteQuery } from '../Services/AdonisSoftDelete'
 
 // Custom model com soft deleted implementado
 export default class CustomModel extends BaseModel {
@@ -12,6 +13,15 @@ export default class CustomModel extends BaseModel {
   public async softDelete(column?: string) {
     await softDelete(this, column)
   }
+
+  @column.dateTime({ autoCreate: true })
+  public createdAt: DateTime
+
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  public updatedAt: DateTime
+
+  @column({ columnName: 'deleted_at', serializeAs: null })
+  public deletedAt: DateTime
 
   public delete = this.softDelete
 }

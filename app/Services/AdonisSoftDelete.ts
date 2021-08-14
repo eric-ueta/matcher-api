@@ -16,4 +16,3 @@ export const softDelete = async (row: LucidRow, column: string = 'deletedAt') =>
     await row.save()
   }
 }
-export const softTest = async () => {}
