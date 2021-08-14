@@ -19,7 +19,16 @@
 */
 
 import Route from '@ioc:Adonis/Core/Route'
+import UsersController from 'App/Controllers/Http/UsersController'
+
+const prefix = '/api'
 
 Route.get('/', async () => {
   return { hello: 'world' }
 })
+
+Route.get('/teste', async (ctx) => {
+  return new UsersController().create(ctx)
+})
+
+Route.resource('user', 'UsersController')
