@@ -10,6 +10,7 @@ export default class Images extends BaseSchema {
       table.binary('image').notNullable()
       table.integer('size').notNullable()
       table.string('url', 255).nullable()
+      table.integer('userId').unsigned().references('id').inTable('user')
 
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL
