@@ -15,9 +15,9 @@ export default class Users extends BaseSchema {
       table.datetime('birth').notNullable()
       table.string('gender', 1).notNullable()
       table.string('notificationToken', 150).nullable()
-      table.integer('profileImageId').references('id').inTable('image')
-      table.integer('cityId').references('id').inTable('city')
-      table.integer('preferenceId').references('id').inTable('preference')
+      table.integer('profileImageId').unsigned().references('id').inTable('image')
+      table.integer('cityId').unsigned().references('id').inTable('city')
+      table.integer('preferenceId').unsigned().references('id').inTable('preference')
 
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL

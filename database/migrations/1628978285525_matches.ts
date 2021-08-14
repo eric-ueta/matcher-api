@@ -6,8 +6,8 @@ export default class Match extends BaseSchema {
   public async up() {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id').primary()
-      table.integer('userOneId').references('id').inTable('user')
-      table.integer('userTwoId').references('id').inTable('user')
+      table.integer('userOneId').unsigned().references('id').inTable('user')
+      table.integer('userTwoId').unsigned().references('id').inTable('user')
       table.boolean('userOneLiked').nullable().defaultTo(null)
       table.boolean('userTwoLiked').nullable().defaultTo(null)
 

@@ -6,8 +6,8 @@ export default class InterestPreferences extends BaseSchema {
   public async up() {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id').primary()
-      table.integer('preferenceId').references('id').inTable('preference')
-      table.integer('interestId').references('id').inTable('interest')
+      table.integer('preferenceId').unsigned().references('id').inTable('preference')
+      table.integer('interestId').unsigned().references('id').inTable('interest')
 
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL

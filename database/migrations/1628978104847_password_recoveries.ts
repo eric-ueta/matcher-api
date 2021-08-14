@@ -6,7 +6,7 @@ export default class PasswordRecovery extends BaseSchema {
   public async up() {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id').primary()
-      table.integer('userId').references('id').inTable('user')
+      table.integer('userId').unsigned().references('id').inTable('user')
       table.string('token', 50).notNullable()
       table.datetime('expireDate').notNullable()
 

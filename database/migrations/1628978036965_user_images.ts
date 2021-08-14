@@ -6,8 +6,8 @@ export default class UserImages extends BaseSchema {
   public async up() {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id').primary()
-      table.integer('userId').references('id').inTable('user')
-      table.integer('imageId').references('id').inTable('image')
+      table.integer('userId').unsigned().references('id').inTable('user')
+      table.integer('imageId').unsigned().references('id').inTable('image')
 
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL
