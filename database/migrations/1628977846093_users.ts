@@ -14,7 +14,7 @@ export default class Users extends BaseSchema {
       table.integer('phone', 9).notNullable()
       table.datetime('birth').notNullable()
       table.string('gender', 1).notNullable()
-      table.string('notification_token', 150).nullable()
+      table.string('notificationToken', 150).nullable()
       table.integer('profileImageId').references('id').inTable('image')
       table.integer('cityId').references('id').inTable('city')
       table.integer('preferenceId').references('id').inTable('preference')
@@ -24,7 +24,7 @@ export default class Users extends BaseSchema {
        */
       table.datetime('created_at', { useTz: true })
       table.datetime('updated_at', { useTz: true })
-      table.datetime('deleted_at', { useTz: true })
+      table.datetime('deleted_at', { useTz: true }).defaultTo(null)
     })
   }
 

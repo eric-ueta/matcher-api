@@ -16,7 +16,7 @@ export default class Images extends BaseSchema {
        */
       table.datetime('created_at', { useTz: true })
       table.datetime('updated_at', { useTz: true })
-      table.datetime('deleted_at', { useTz: true })
+      table.datetime('deleted_at', { useTz: true }).defaultTo(null)
     })
   }
 
