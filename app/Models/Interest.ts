@@ -1,13 +1,21 @@
-import { DateTime } from 'luxon'
-import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm'
+import { column, ManyToMany, manyToMany } from '@ioc:Adonis/Lucid/Orm'
+import CustomModel from './CustomModel'
+import Preference from './Preference'
 
-export default class Interest extends BaseModel {
+export default class Interest extends CustomModel {
   @column({ isPrimary: true })
   public id: number
 
-  @column.dateTime({ autoCreate: true })
-  public createdAt: DateTime
+  @column()
+  public description: string
 
-  @column.dateTime({ autoCreate: true, autoUpdate: true })
-  public updatedAt: DateTime
+  @manyToMany(() => Preference, {
+    localKey: 'id',
+    pivotForeignKey: 'interestId',
+    relatedKey: 'id',
+    pivotRelatedForeignKey: 'preferenceId',
+    pivotTable: 'interest_preference',
+    pivotTimestamps: true,
+  })
+  public preferences: ManyToMany<typeof Preference>
 }

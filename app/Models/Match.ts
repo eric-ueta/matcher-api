@@ -1,13 +1,19 @@
-import { DateTime } from 'luxon'
-import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm'
+import { column } from '@ioc:Adonis/Lucid/Orm'
+import CustomModel from './CustomModel'
 
-export default class Match extends BaseModel {
+export default class Match extends CustomModel {
   @column({ isPrimary: true })
   public id: number
 
-  @column.dateTime({ autoCreate: true })
-  public createdAt: DateTime
+  @column()
+  public userOneId: number
 
-  @column.dateTime({ autoCreate: true, autoUpdate: true })
-  public updatedAt: DateTime
+  @column()
+  public userTwoId: number
+
+  @column()
+  public userOneLiked: boolean
+
+  @column()
+  public userTwoLiked: boolean
 }

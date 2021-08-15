@@ -1,13 +1,14 @@
-import { DateTime } from 'luxon'
-import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm'
+import { column, HasMany, hasMany } from '@ioc:Adonis/Lucid/Orm'
+import CustomModel from './CustomModel'
+import User from './User'
 
-export default class City extends BaseModel {
+export default class City extends CustomModel {
   @column({ isPrimary: true })
   public id: number
 
-  @column.dateTime({ autoCreate: true })
-  public createdAt: DateTime
+  @column()
+  public name: string
 
-  @column.dateTime({ autoCreate: true, autoUpdate: true })
-  public updatedAt: DateTime
+  @hasMany(() => User)
+  public users: HasMany<typeof User>
 }

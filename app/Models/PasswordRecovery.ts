@@ -1,13 +1,25 @@
+import { BelongsTo, belongsTo, column } from '@ioc:Adonis/Lucid/Orm'
+import Crypt from 'App/Utils/Crypt'
 import { DateTime } from 'luxon'
-import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm'
+import CustomModel from './CustomModel'
+import User from './User'
 
-export default class PasswordRecovery extends BaseModel {
+export default class PasswordRecovery extends CustomModel {
   @column({ isPrimary: true })
   public id: number
 
-  @column.dateTime({ autoCreate: true })
-  public createdAt: DateTime
+  @column()
+  public userId: number
 
-  @column.dateTime({ autoCreate: true, autoUpdate: true })
-  public updatedAt: DateTime
+  @column({
+    prepare: (value: string) => Crypt.encrypt(value),
+    consume: (value: string) => Crypt.decrypt(value),
+  })
+  public token: string
+
+  @column()
+  public expireDate: DateTime
+
+  @belongsTo(() => User)
+  public user: BelongsTo<typeof User>
 }
