@@ -8,6 +8,7 @@ export default class InterestPreferences extends BaseSchema {
       table.increments('id').primary()
       table.integer('preferenceId').unsigned().references('id').inTable('preference')
       table.integer('interestId').unsigned().references('id').inTable('interest')
+      table.unique(['preferenceId', 'interestId'])
 
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL
