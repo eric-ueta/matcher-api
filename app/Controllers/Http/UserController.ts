@@ -2,6 +2,7 @@ import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { UserService } from 'App/Services/UserService'
 import { schema, rules } from '@ioc:Adonis/Core/Validator'
 import { NewUser } from 'Contracts/dtos/user/newUser'
+import CreateUserValidator from 'App/Validators/CreateUserValidator'
 
 export default class UserController {
   private UserService: UserService
@@ -15,35 +16,9 @@ export default class UserController {
   public async create({}: HttpContextContract) {}
 
   public async store({ request, response }: HttpContextContract) {
-    const userSchema = schema.create({
-      email: schema.string({}, [
-        rules.required(),
-        rules.unique({
-          table: 'user',
-          column: 'email',
-          caseInsensitive: true,
-          whereNot: { emailToken: null },
-        }),
-        rules.maxLength(255),
-        rules.email(),
-      ]),
-      name: schema.string({}, [rules.required()]),
-      password: schema.string({}, [rules.required()]),
-      phone: schema.number(),
-      birth: schema.date({}, [rules.required()]),
-      cityId: schema.number(),
-      gender: schema.string({}, [rules.required()]),
-    })
-
     try {
-      const payload: NewUser = await request.validate({
-        schema: userSchema,
-        messages: {
-          'email.unique': 'E-mail já cadastrado',
-        },
-      })
+      const payload: NewUser = await request.validate(CreateUserValidator)
 
-      console.log(1)
       const newUser = await this.UserService.registerUser(payload)
 
       if (newUser) {

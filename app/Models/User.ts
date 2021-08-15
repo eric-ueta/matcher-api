@@ -37,6 +37,7 @@ export default class User extends CustomModel {
 
   @column({
     columnName: 'emailToken',
+    serializeAs: null,
   })
   public emailToken: string
 
