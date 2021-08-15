@@ -3,6 +3,8 @@ import CustomModel from './CustomModel'
 import User from './User'
 
 export default class Image extends CustomModel {
+  public static table = 'image'
+
   @column({ isPrimary: true })
   public id: number
 
@@ -18,7 +20,7 @@ export default class Image extends CustomModel {
   @column()
   public url: string
 
-  @column()
+  @column({ columnName: 'userId' })
   public userId: number
 
   @belongsTo(() => User)

@@ -21,4 +21,8 @@ export default Env.rules({
   APP_NAME: Env.schema.string(),
   NODE_ENV: Env.schema.enum(['development', 'production', 'testing'] as const),
   DB_CONNECTION: Env.schema.string(),
+  SES_ACCESS_KEY: Env.schema.string(),
+  SES_ACCESS_SECRET: Env.schema.string(),
+  SES_REGION: Env.schema.string(),
+  DEFAULT_EMAIL: Env.schema.string(),
 })

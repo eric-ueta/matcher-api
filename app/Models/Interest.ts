@@ -3,6 +3,8 @@ import CustomModel from './CustomModel'
 import Preference from './Preference'
 
 export default class Interest extends CustomModel {
+  public static table = 'interest'
+
   @column({ isPrimary: true })
   public id: number
 

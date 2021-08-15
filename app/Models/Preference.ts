@@ -1,20 +1,21 @@
 import { column, ManyToMany, manyToMany } from '@ioc:Adonis/Lucid/Orm'
-import Gender from 'Contracts/enums/gender'
 import CustomModel from './CustomModel'
 import Interest from './Interest'
 
 export default class Preference extends CustomModel {
+  public static table = 'preference'
+
   @column({ isPrimary: true })
   public id: number
 
-  @column()
+  @column({ columnName: 'minimumAge' })
   public minimumAge: number
 
-  @column()
+  @column({ columnName: 'maximumAge' })
   public maximumAge: number
 
   @column()
-  public gender: Gender
+  public gender: string
 
   @manyToMany(() => Interest, {
     localKey: 'id',

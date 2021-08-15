@@ -5,10 +5,12 @@ import CustomModel from './CustomModel'
 import User from './User'
 
 export default class PasswordRecovery extends CustomModel {
+  public static table = 'passwordRecovery'
+
   @column({ isPrimary: true })
   public id: number
 
-  @column()
+  @column({ columnName: 'userId' })
   public userId: number
 
   @column({
@@ -17,7 +19,7 @@ export default class PasswordRecovery extends CustomModel {
   })
   public token: string
 
-  @column()
+  @column({ columnName: 'expireDate' })
   public expireDate: DateTime
 
   @belongsTo(() => User)

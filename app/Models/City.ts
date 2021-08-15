@@ -3,6 +3,8 @@ import CustomModel from './CustomModel'
 import User from './User'
 
 export default class City extends CustomModel {
+  public static table = 'city'
+
   @column({ isPrimary: true })
   public id: number
 

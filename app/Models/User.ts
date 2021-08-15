@@ -1,5 +1,6 @@
 import { DateTime } from 'luxon'
 import {
+  beforeSave,
   BelongsTo,
   belongsTo,
   column,
@@ -10,8 +11,6 @@ import {
   HasOne,
   hasOne,
 } from '@ioc:Adonis/Lucid/Orm'
-import Gender from 'Contracts/enums/gender'
-import Crypt from 'App/Utils/Crypt'
 import CustomModel from './CustomModel'
 import Image from './Image'
 import City from './City'
@@ -19,26 +18,25 @@ import Preference from './Preference'
 import Match from './Match'
 import PasswordRecovery from './PasswordRecovery'
 import Interest from './Interest'
+import Hash from '@ioc:Adonis/Core/Hash'
 
 export default class User extends CustomModel {
+  public static table = 'user'
+
   @column({ isPrimary: true })
   public id: number
 
   @column()
   public name: string
 
-  @column({
-    prepare: (value: string) => Crypt.encrypt(value),
-    consume: (value: string) => Crypt.decrypt(value),
-  })
+  @column({ serializeAs: null })
   public password: string
 
   @column()
   public email: string
 
   @column({
-    prepare: (value: string) => Crypt.encrypt(value),
-    consume: (value: string) => Crypt.decrypt(value),
+    columnName: 'emailToken',
   })
   public emailToken: string
 
@@ -49,22 +47,22 @@ export default class User extends CustomModel {
   public birth: DateTime
 
   @column()
-  public gender: Gender
+  public gender: string
 
-  @column()
+  @column({ columnName: 'notificationToken' })
   public notificationToken: string
 
-  @column()
+  @column({ columnName: 'cityId' })
   public cityId: number
 
-  @column()
+  @column({ columnName: 'preferenceId' })
   public preferenceId: number
 
   @hasMany(() => Image)
   public images: HasMany<typeof Image>
 
   @belongsTo(() => City)
-  public cities: BelongsTo<typeof City>
+  public city: BelongsTo<typeof City>
 
   @hasOne(() => Preference)
   public preference: HasOne<typeof Preference>
@@ -77,4 +75,11 @@ export default class User extends CustomModel {
 
   @hasMany(() => PasswordRecovery)
   public passwordRecoveries: HasMany<typeof PasswordRecovery>
+
+  @beforeSave()
+  public static async hashPassword(user: User) {
+    if (user.$dirty.password) {
+      user.password = await Hash.make(user.password)
+    }
+  }
 }
