@@ -1,5 +1,6 @@
-import { column, HasMany, hasMany } from '@ioc:Adonis/Lucid/Orm'
+import { BelongsTo, belongsTo, column, HasMany, hasMany } from '@ioc:Adonis/Lucid/Orm'
 import CustomModel from './CustomModel'
+import State from './State'
 import User from './User'
 
 export default class City extends CustomModel {
@@ -13,4 +14,10 @@ export default class City extends CustomModel {
 
   @hasMany(() => User)
   public users: HasMany<typeof User>
+
+  @column({ columnName: 'stateId' })
+  public stateId: number
+
+  @belongsTo(() => State)
+  public state: BelongsTo<typeof State>
 }

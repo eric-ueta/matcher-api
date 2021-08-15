@@ -24,14 +24,20 @@ export default class UserController {
       if (newUser) {
         response.send(newUser)
       } else {
-        response.status(500).send({ a: 't' })
+        response.status(500).send({})
       }
     } catch (error) {
       response.badRequest(error.messages)
     }
   }
 
-  public async show({}: HttpContextContract) {}
+  public async show({ request, response }: HttpContextContract) {
+    const id: number = request.param('id')
+
+    const user = await this.UserService.getUser(id)
+
+    response.send(user)
+  }
 
   public async edit({}: HttpContextContract) {}
 

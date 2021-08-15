@@ -22,19 +22,30 @@ export class UserService {
     })
 
     try {
-      await Mail.send((message) => {
-        message
-          .from(Env.get('DEFAULT_EMAIL'))
-          .to(Env.get('DEFAULT_EMAIL'))
-          .subject('Bem-vindo ao Matcher!')
-          .htmlView('emails/confirm_email', {
-            url: `http://0.0.0.0:3333/confirm_email?token=${mailHash}`,
-          })
-      })
+      // await Mail.send((message) => {
+      //   message
+      //     .from(Env.get('DEFAULT_EMAIL'))
+      //     .to(Env.get('DEFAULT_EMAIL'))
+      //     .subject('Bem-vindo ao Matcher!')
+      //     .htmlView('emails/confirm_email', {
+      //       url: `http://0.0.0.0:3333/confirm_email?token=${mailHash}`,
+      //     })
+      // })
     } catch (exc) {
       console.log(exc)
     }
 
     return newUser
+  }
+
+  public async getUser(id: number) {
+    return await User.query().where('id', id).whereNull('emailToken').first()
+  }
+
+  public async updateNotificationToken(id: number, notificationToken: string) {
+    const user = await User.findOrFail(id)
+    user.notificationToken = notificationToken
+
+    await user.save()
   }
 }
