@@ -17,13 +17,13 @@ export default class AuthController {
     const notificationToken = request.input('notificationToken')
 
     try {
-      const token = await auth.use('api').attempt(email, password)
+      const t = await auth.use('api').attempt(email, password)
 
       if (auth.user) this.userService.updateNotificationToken(auth.user?.id, notificationToken)
 
-      return token
+      return { user: t.user, type: t.type, token: t.token }
     } catch (e) {
-      return response.unauthorized({ message: 'Invalid credentials' })
+      return response.unauthorized({ message: 'Dados inválidos' })
     }
   }
 }

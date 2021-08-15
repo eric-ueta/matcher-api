@@ -28,8 +28,11 @@ Route.group(() => {
     Route.get('/state', 'StateController.index')
     Route.get('/state/:id', 'StateController.getCities')
 
+    Route.get('/interest', 'InterestController.index')
+
     Route.group(() => {
       Route.get('/user/:id', 'UserController.show')
+      Route.put('/user/:id/preference', 'UserController.updateBasePreferences')
     }).middleware(['auth'])
   }).prefix('/v1')
 }).prefix('/api')

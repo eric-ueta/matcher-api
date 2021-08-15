@@ -39,6 +39,18 @@ export default class UserController {
     response.send(user)
   }
 
+  public async updateBasePreferences({ request, response, auth }: HttpContextContract) {
+    const data = request.only(['minimumAge', 'maximumAge', 'gender'])
+
+    if (!auth.user) return response.status(401)
+
+    const userId = auth.user.id
+
+    this.UserService.updateBasePreferences(userId, data.minimumAge, data.maximumAge, data.gender)
+
+    response.status(204)
+  }
+
   public async edit({}: HttpContextContract) {}
 
   public async update({}: HttpContextContract) {}

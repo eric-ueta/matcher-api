@@ -1,6 +1,15 @@
-import { column, ManyToMany, manyToMany } from '@ioc:Adonis/Lucid/Orm'
+import {
+  BelongsTo,
+  belongsTo,
+  column,
+  HasOne,
+  hasOne,
+  ManyToMany,
+  manyToMany,
+} from '@ioc:Adonis/Lucid/Orm'
 import CustomModel from './CustomModel'
 import Interest from './Interest'
+import User from './User'
 
 export default class Preference extends CustomModel {
   public static table = 'preference'
@@ -26,4 +35,7 @@ export default class Preference extends CustomModel {
     pivotTimestamps: true,
   })
   public preferences: ManyToMany<typeof Interest>
+
+  @hasOne(() => User)
+  public user: HasOne<typeof User>
 }

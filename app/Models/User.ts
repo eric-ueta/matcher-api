@@ -65,8 +65,8 @@ export default class User extends CustomModel {
   @belongsTo(() => City)
   public city: BelongsTo<typeof City>
 
-  @hasOne(() => Preference)
-  public preference: HasOne<typeof Preference>
+  @belongsTo(() => Preference)
+  public preference: BelongsTo<typeof Preference>
 
   @hasManyThrough([() => Interest, () => Preference])
   public interests: HasManyThrough<typeof Interest>
