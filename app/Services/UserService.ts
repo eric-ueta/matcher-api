@@ -85,4 +85,30 @@ export class UserService {
     await user.preference.related('interests').detach() // ¯\_(ツ)_/¯
     await user.preference.related('interests').attach(intererestsIds)
   }
+
+  public async getCandidates(user: User) {
+    const candidates = await User.query()
+      .where('cityId', user.cityId)
+      .whereHas('preference', (preference) => {
+        preference
+          .where('minimumAge', '<=', user.getAge())
+          .where('maximumAge', '>=', user.getAge())
+          .where('gender', user.gender)
+      })
+      .orWhereHas('preference', (preference) => {
+        preference
+          .where('minimumAge', '<=', user.getAge())
+          .where('maximumAge', '>=', user.getAge())
+          .where('gender', 'o')
+      })
+      .whereNot('id', user.id)
+      .paginate(1, 500)
+
+    // cidade
+    // sexo
+    // idade
+    // interesses
+
+    return candidates
+  }
 }

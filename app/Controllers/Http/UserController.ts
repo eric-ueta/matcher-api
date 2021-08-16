@@ -1,6 +1,5 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { UserService } from 'App/Services/UserService'
-import { schema, rules } from '@ioc:Adonis/Core/Validator'
 import { NewUser } from 'Contracts/dtos/user/newUser'
 import CreateUserValidator from 'App/Validators/CreateUserValidator'
 
@@ -61,6 +60,16 @@ export default class UserController {
     await this.UserService.updateInterests(userId, data.interestIds)
 
     response.status(204)
+  }
+
+  public async getCandidates({ request, response, auth }: HttpContextContract) {
+    const user = auth.user
+
+    if (!user) return response.send(500)
+
+    const candidates = await this.UserService.getCandidates(user)
+
+    response.send(candidates)
   }
 
   public async edit({}: HttpContextContract) {}

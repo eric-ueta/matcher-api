@@ -32,8 +32,12 @@ Route.group(() => {
 
     Route.group(() => {
       Route.get('/user/:id', 'UserController.show')
+      Route.get('/user/candidate/all', 'UserController.getCandidates')
+
       Route.put('/user/preference', 'UserController.updateBasePreferences')
       Route.put('/user/interest', 'UserController.updateInterests')
+
+      Route.get('/match', 'MatchController.index')
     }).middleware(['auth'])
   }).prefix('/v1')
 }).prefix('/api')

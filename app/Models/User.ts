@@ -83,4 +83,15 @@ export default class User extends CustomModel {
       user.password = await Hash.make(user.password)
     }
   }
+
+  public getAge() {
+    const today = new Date()
+    const birthDate = new Date(this.birth.toString())
+    let age = today.getFullYear() - birthDate.getFullYear()
+    let m = today.getMonth() - birthDate.getMonth()
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+      age--
+    }
+    return age
+  }
 }
