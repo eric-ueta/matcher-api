@@ -51,6 +51,18 @@ export default class UserController {
     response.status(204)
   }
 
+  public async updateInterests({ request, response, auth }: HttpContextContract) {
+    const data = request.only(['interestIds'])
+
+    if (!auth.user) return response.status(401)
+
+    const userId = auth.user.id
+
+    await this.UserService.updateInterests(userId, data.interestIds)
+
+    response.status(204)
+  }
+
   public async edit({}: HttpContextContract) {}
 
   public async update({}: HttpContextContract) {}

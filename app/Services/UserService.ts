@@ -78,4 +78,11 @@ export class UserService {
 
     await user.save()
   }
+
+  public async updateInterests(id: number, intererestsIds: Array<number>) {
+    const user = await User.query().preload('preference').where('id', id).firstOrFail()
+
+    await user.preference.related('interests').detach() // ¯\_(ツ)_/¯
+    await user.preference.related('interests').attach(intererestsIds)
+  }
 }

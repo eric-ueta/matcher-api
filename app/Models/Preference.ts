@@ -2,6 +2,8 @@ import {
   BelongsTo,
   belongsTo,
   column,
+  hasMany,
+  HasMany,
   HasOne,
   hasOne,
   ManyToMany,
@@ -34,7 +36,7 @@ export default class Preference extends CustomModel {
     pivotTable: 'interest_preference',
     pivotTimestamps: true,
   })
-  public preferences: ManyToMany<typeof Interest>
+  public interests: ManyToMany<typeof Interest>
 
   @hasOne(() => User)
   public user: HasOne<typeof User>
