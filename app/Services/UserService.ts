@@ -4,6 +4,8 @@ import { NewUser } from 'Contracts/dtos/user/newUser'
 import { makeId } from 'App/Utils/Hash'
 import Env from '@ioc:Adonis/Core/Env'
 import Preference from 'App/Models/Preference'
+import { subYears } from 'date-fns'
+import Match from 'App/Models/Match'
 export class UserService {
   /**
    * registerUser
@@ -37,6 +39,10 @@ export class UserService {
     }
 
     return newUser
+  }
+
+  public async getAll() {
+    return await User.query().paginate(1, 500)
   }
 
   public async getUser(id: number) {
@@ -87,27 +93,40 @@ export class UserService {
   }
 
   public async getCandidates(user: User) {
-    const candidates = await User.query()
-      .where('cityId', user.cityId)
-      .whereHas('preference', (preference) => {
-        preference
-          .where('minimumAge', '<=', user.getAge())
-          .where('maximumAge', '>=', user.getAge())
-          .where('gender', user.gender)
-      })
-      .orWhereHas('preference', (preference) => {
-        preference
-          .where('minimumAge', '<=', user.getAge())
-          .where('maximumAge', '>=', user.getAge())
-          .where('gender', 'o')
-      })
-      .whereNot('id', user.id)
-      .paginate(1, 500)
+    await user.load('preference')
 
     // cidade
     // sexo
     // idade
-    // interesses
+
+    // ordenar interesses
+
+    const maximumBirthPref = subYears(Date.now(), user.preference.maximumAge).toISOString()
+    const minimumBirthPref = subYears(Date.now(), user.preference.minimumAge).toISOString()
+
+    const preferedGender = user.preference.gender
+    const isBissexual = preferedGender === 'o'
+    const acceptedGenders = isBissexual ? ['m', 'f'] : [preferedGender]
+
+    const candidates = await User.query()
+      .where('cityId', user.cityId) // mesma cidade do usuario
+      .whereIn('gender', acceptedGenders) // usuario aceite genero do candidato
+      .whereBetween('birth', [maximumBirthPref, minimumBirthPref]) // usuario aceite idade do candidato
+      .whereHas('preference', (preference) => {
+        preference
+          .where('minimumAge', '<=', user.getAge()) // candidato aceite idade do usuario
+          .where('maximumAge', '>=', user.getAge()) // candidato aceite idade do usuario
+          .whereIn('gender', [user.gender, 'o']) // candidato aceite genero do usuario (sexo do usuario exato ou bi)
+      })
+      .whereNot('id', user.id) // filtrar próprio usuário
+      // filtro matches 1
+      .whereDoesntHave('matchesOne', (match) => {
+        match.where('userOneId', user.id).orWhere('userTwoId', user.id)
+      })
+      // filtro matches 2
+      .whereDoesntHave('matchesTwo', (match) => {
+        match.where('userOneId', user.id).orWhere('userTwoId', user.id)
+      })
 
     return candidates
   }

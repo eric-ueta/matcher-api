@@ -32,6 +32,7 @@ Route.group(() => {
 
     Route.group(() => {
       Route.get('/user/:id', 'UserController.show')
+      Route.get('/users', 'UserController.index')
       Route.get('/user/candidate/all', 'UserController.getCandidates')
 
       Route.put('/user/preference', 'UserController.updateBasePreferences')

@@ -4,6 +4,7 @@ import {
   BelongsTo,
   belongsTo,
   column,
+  computed,
   HasMany,
   hasMany,
   HasManyThrough,
@@ -71,8 +72,17 @@ export default class User extends CustomModel {
   @hasManyThrough([() => Interest, () => Preference])
   public interests: HasManyThrough<typeof Interest>
 
-  @hasMany(() => Match)
-  public matches: HasMany<typeof Match>
+  @hasMany(() => Match, {
+    localKey: 'id',
+    foreignKey: 'userOneId',
+  })
+  public matchesOne: HasMany<typeof Match>
+
+  @hasMany(() => Match, {
+    localKey: 'id',
+    foreignKey: 'userTwoId',
+  })
+  public matchesTwo: HasMany<typeof Match>
 
   @hasMany(() => PasswordRecovery)
   public passwordRecoveries: HasMany<typeof PasswordRecovery>
@@ -82,6 +92,11 @@ export default class User extends CustomModel {
     if (user.$dirty.password) {
       user.password = await Hash.make(user.password)
     }
+  }
+
+  @computed()
+  public get age() {
+    return this.getAge()
   }
 
   public getAge() {

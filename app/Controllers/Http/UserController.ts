@@ -10,7 +10,11 @@ export default class UserController {
     this.UserService = new UserService()
   }
 
-  public async index({}: HttpContextContract) {}
+  public async index({ response }: HttpContextContract) {
+    const users = await this.UserService.getAll()
+
+    response.send(users)
+  }
 
   public async create({}: HttpContextContract) {}
 

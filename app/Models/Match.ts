@@ -1,5 +1,7 @@
-import { column } from '@ioc:Adonis/Lucid/Orm'
+import { BelongsTo, belongsTo, column } from '@ioc:Adonis/Lucid/Orm'
+
 import CustomModel from './CustomModel'
+import User from './User'
 
 export default class Match extends CustomModel {
   public static table = 'match'
@@ -18,4 +20,10 @@ export default class Match extends CustomModel {
 
   @column({ columnName: 'userTwoLiked' })
   public userTwoLiked: boolean
+
+  @belongsTo(() => User, { localKey: 'id', foreignKey: 'userOneId' })
+  public userOne: BelongsTo<typeof User>
+
+  @belongsTo(() => User, { localKey: 'id', foreignKey: 'userTwoId' })
+  public userTwo: BelongsTo<typeof User>
 }
