@@ -38,6 +38,8 @@ Route.group(() => {
       Route.put('/user/preference', 'UserController.updateBasePreferences')
       Route.put('/user/interest', 'UserController.updateInterests')
 
+      Route.post('/user/image', 'UserController.addImage')
+
       Route.get('/match', 'MatchController.index')
     }).middleware(['auth'])
   }).prefix('/v1')

@@ -6,11 +6,11 @@ export default class Images extends BaseSchema {
   public async up() {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id').primary()
+      table.string('path', 255).notNullable()
       table.string('format', 10).notNullable()
-      table.binary('image').notNullable()
       table.integer('size').notNullable()
-      table.string('url', 255).nullable()
       table.integer('userId').unsigned().references('id').inTable('user').onDelete('CASCADE')
+      table.boolean('isProfile').notNullable()
 
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL

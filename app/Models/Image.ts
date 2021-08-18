@@ -12,13 +12,13 @@ export default class Image extends CustomModel {
   public format: string
 
   @column()
-  public image: any
-
-  @column()
   public size: number
 
   @column()
-  public url: string
+  public path: string
+
+  @column({ columnName: 'isProfile' })
+  public isProfile: boolean
 
   @column({ columnName: 'userId' })
   public userId: number

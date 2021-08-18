@@ -76,6 +76,17 @@ export default class UserController {
     response.send(candidates)
   }
 
+  public async addImage({ request, response, auth }: HttpContextContract) {
+    const img = request.file('image')
+    const isProfile: boolean = request.input('isProfile')
+
+    const user = auth.user
+
+    if (!user) return response.internalServerError()
+
+    await this.UserService.addImage(user?.id, img, isProfile)
+  }
+
   public async edit({}: HttpContextContract) {}
 
   public async update({}: HttpContextContract) {}

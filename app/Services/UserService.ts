@@ -3,6 +3,9 @@ import { NewUser } from 'Contracts/dtos/user/newUser'
 import { makeId } from 'App/Utils/Hash'
 import Preference from 'App/Models/Preference'
 import { subYears } from 'date-fns'
+import { MultipartFileContract } from '@ioc:Adonis/Core/BodyParser'
+import Application from '@ioc:Adonis/Core/Application'
+import Image from 'App/Models/Image'
 export class UserService {
   /**
    * registerUser
@@ -125,5 +128,36 @@ export class UserService {
       })
 
     return candidates
+  }
+
+  public async addImage(id: number, img: MultipartFileContract | null, isProfile: boolean) {
+    const imgName = `${Date.now()}_USER_${id}.jpg`
+
+    if (img) {
+      const newImage = new Image()
+      newImage.format = img.extname ?? 'jpg'
+      newImage.size = img.size
+      newImage.userId = id
+      newImage.path = `uploads\\${imgName}`
+      newImage.isProfile = isProfile
+
+      if (isProfile) {
+        const currentProfileImage = await Image.query()
+          .where('userId', id)
+          .where('isProfile', 'true')
+          .first()
+
+        if (currentProfileImage) {
+          currentProfileImage.isProfile = false
+          await currentProfileImage.save()
+        }
+      }
+
+      await img.move(Application.tmpPath('uploads'), {
+        name: imgName,
+        overwrite: false,
+      })
+      await newImage.save()
+    }
   }
 }
