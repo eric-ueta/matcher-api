@@ -1,5 +1,6 @@
 import { DateTime } from 'luxon'
 import {
+  BaseModel,
   beforeSave,
   BelongsTo,
   belongsTo,
@@ -9,19 +10,17 @@ import {
   hasMany,
   HasManyThrough,
   hasManyThrough,
-  HasOne,
-  hasOne,
+  manyToMany,
+  ManyToMany,
 } from '@ioc:Adonis/Lucid/Orm'
-import CustomModel from './CustomModel'
 import Image from './Image'
 import City from './City'
 import Preference from './Preference'
-import Match from './Match'
 import PasswordRecovery from './PasswordRecovery'
 import Interest from './Interest'
 import Hash from '@ioc:Adonis/Core/Hash'
 
-export default class User extends CustomModel {
+export default class User extends BaseModel {
   public static table = 'user'
 
   @column({ isPrimary: true })
@@ -72,17 +71,27 @@ export default class User extends CustomModel {
   @hasManyThrough([() => Interest, () => Preference])
   public interests: HasManyThrough<typeof Interest>
 
-  @hasMany(() => Match, {
+  @manyToMany(() => User, {
     localKey: 'id',
-    foreignKey: 'userOneId',
+    relatedKey: 'id',
+    pivotForeignKey: 'userOneId',
+    pivotRelatedForeignKey: 'userTwoId',
+    pivotTable: 'match',
+    pivotTimestamps: true,
+    pivotColumns: ['userOneLiked', 'userTwoLiked', 'created_at', 'updated_at', 'deleted_at'],
   })
-  public matchesOne: HasMany<typeof Match>
+  public matchesStarted: ManyToMany<typeof User>
 
-  @hasMany(() => Match, {
+  @manyToMany(() => User, {
     localKey: 'id',
-    foreignKey: 'userTwoId',
+    relatedKey: 'id',
+    pivotForeignKey: 'userTwoId',
+    pivotRelatedForeignKey: 'userOneId',
+    pivotTable: 'match',
+    pivotTimestamps: true,
+    pivotColumns: ['userOneLiked', 'userTwoLiked', 'created_at', 'updated_at', 'deleted_at'],
   })
-  public matchesTwo: HasMany<typeof Match>
+  public matchesRelated: ManyToMany<typeof User>
 
   @hasMany(() => PasswordRecovery)
   public passwordRecoveries: HasMany<typeof PasswordRecovery>
@@ -93,6 +102,12 @@ export default class User extends CustomModel {
       user.password = await Hash.make(user.password)
     }
   }
+
+  @column.dateTime({ autoCreate: true })
+  public createdAt: DateTime
+
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  public updatedAt: DateTime
 
   @computed()
   public get age() {

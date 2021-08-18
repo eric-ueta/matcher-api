@@ -1,11 +1,8 @@
-import Mail from '@ioc:Adonis/Addons/Mail'
 import User from 'App/Models/User'
 import { NewUser } from 'Contracts/dtos/user/newUser'
 import { makeId } from 'App/Utils/Hash'
-import Env from '@ioc:Adonis/Core/Env'
 import Preference from 'App/Models/Preference'
 import { subYears } from 'date-fns'
-import Match from 'App/Models/Match'
 export class UserService {
   /**
    * registerUser
@@ -94,7 +91,6 @@ export class UserService {
 
   public async getCandidates(user: User) {
     await user.load('preference')
-
     // cidade
     // sexo
     // idade
@@ -112,20 +108,20 @@ export class UserService {
       .where('cityId', user.cityId) // mesma cidade do usuario
       .whereIn('gender', acceptedGenders) // usuario aceite genero do candidato
       .whereBetween('birth', [maximumBirthPref, minimumBirthPref]) // usuario aceite idade do candidato
+      .whereNot('id', user.id) // filtrar próprio usuário
       .whereHas('preference', (preference) => {
         preference
           .where('minimumAge', '<=', user.getAge()) // candidato aceite idade do usuario
           .where('maximumAge', '>=', user.getAge()) // candidato aceite idade do usuario
           .whereIn('gender', [user.gender, 'o']) // candidato aceite genero do usuario (sexo do usuario exato ou bi)
       })
-      .whereNot('id', user.id) // filtrar próprio usuário
-      // filtro matches 1
-      .whereDoesntHave('matchesOne', (match) => {
-        match.where('userOneId', user.id).orWhere('userTwoId', user.id)
+      // Onde não tenha uma avaliação do usuario em um match iniciado pelo candidato
+      .whereDoesntHave('matchesStarted', (match) => {
+        match.whereInPivot('userTwoId', [user.id]).orWhereNotNullPivot('userOneLiked')
       })
-      // filtro matches 2
-      .whereDoesntHave('matchesTwo', (match) => {
-        match.where('userOneId', user.id).orWhere('userTwoId', user.id)
+      // Onde não tenha um possivel/efetuado match iniciada pelo usuario
+      .whereDoesntHave('matchesRelated', (match) => {
+        match.whereInPivot('userOneId', [user.id])
       })
 
     return candidates
