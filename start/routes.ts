@@ -40,6 +40,8 @@ Route.group(() => {
 
       Route.post('/user/image', 'UserController.addImage')
 
+      Route.get('/image/:id', 'ImageController.getImageById')
+
       Route.get('/match', 'MatchController.index')
     }).middleware(['auth'])
   }).prefix('/v1')
