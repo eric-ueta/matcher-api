@@ -18,4 +18,18 @@ export default class MatchController {
 
     response.send(matches)
   }
+
+  public async postMatch({ request, response, auth }: HttpContextContract) {
+    const data = request.only(['userId', 'like'])
+
+    const userId = auth?.user?.id
+
+    const success = await this.matchService.postMatch(userId, data.userId, data.like)
+
+    if (success) {
+      return response.noContent()
+    } else {
+      return response.internalServerError()
+    }
+  }
 }

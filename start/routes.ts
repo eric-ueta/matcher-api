@@ -26,7 +26,9 @@ Route.group(() => {
     Route.post('/login', 'AuthController.login')
 
     Route.get('/state', 'StateController.index')
+    Route.get('/state/cities', 'StateController.getAllWithCities')
     Route.get('/state/:id', 'StateController.getCities')
+    Route.get('/city', 'CityController.index')
 
     Route.get('/interest', 'InterestController.index')
 
@@ -40,10 +42,10 @@ Route.group(() => {
 
       Route.post('/user/image', 'UserController.addImage')
 
-      Route.get('/image/:id', 'ImageController.getImageById')
-
+      Route.post('/match', 'MatchController.postMatch')
       Route.get('/match', 'MatchController.index')
     }).middleware(['auth'])
+    Route.get('/image/:id', 'ImageController.getImageById')
   }).prefix('/v1')
 }).prefix('/api')
 

@@ -48,6 +48,9 @@ export default class User extends BaseModel {
   public birth: DateTime
 
   @column()
+  public about: string
+
+  @column()
   public gender: string
 
   @column({ columnName: 'notificationToken' })
@@ -68,7 +71,12 @@ export default class User extends BaseModel {
   @belongsTo(() => Preference)
   public preference: BelongsTo<typeof Preference>
 
-  @hasManyThrough([() => Interest, () => Preference])
+  @hasManyThrough([() => Interest, () => Preference], {
+    localKey: 'preferenceId',
+    foreignKey: 'id',
+    throughLocalKey: 'id',
+    throughForeignKey: 'preferenceId',
+  })
   public interests: HasManyThrough<typeof Interest>
 
   @manyToMany(() => User, {

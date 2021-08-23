@@ -4,7 +4,7 @@ import { PreferenceFactory } from 'Database/factories'
 
 export default class PreferenceSeeder extends BaseSeeder {
   public async run() {
-    const preferences = await PreferenceFactory.createMany(30)
+    const preferences = await PreferenceFactory.createMany(0)
 
     const preferenceArrayArray = preferences.map((preference) => {
       return {

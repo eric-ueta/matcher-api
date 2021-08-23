@@ -21,4 +21,10 @@ export default class StateController {
 
     response.send(stateWithCities)
   }
+
+  public async getAllWithCities({ request, response }: HttpContextContract) {
+    const stateWithCities = await this.stateService.getAllWithCities()
+
+    response.send(stateWithCities)
+  }
 }

@@ -1,5 +1,5 @@
 import { DateTime } from 'luxon'
-import { column, HasMany, hasMany } from '@ioc:Adonis/Lucid/Orm'
+import { column, computed, HasMany, hasMany } from '@ioc:Adonis/Lucid/Orm'
 import CustomModel from './CustomModel'
 import City from './City'
 

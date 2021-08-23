@@ -16,6 +16,8 @@ export default class AuthController {
     const password = request.input('password')
     const notificationToken = request.input('notificationToken')
 
+    console.log(email, password, notificationToken)
+
     try {
       const t = await auth.use('api').attempt(email, password)
 

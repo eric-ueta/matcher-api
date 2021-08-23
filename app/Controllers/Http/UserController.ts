@@ -20,6 +20,7 @@ export default class UserController {
 
   public async store({ request, response }: HttpContextContract) {
     try {
+      console.log(request.body())
       const payload: NewUser = await request.validate(CreateUserValidator)
 
       const newUser = await this.UserService.registerUser(payload)
@@ -43,13 +44,21 @@ export default class UserController {
   }
 
   public async updateBasePreferences({ request, response, auth }: HttpContextContract) {
-    const data = request.only(['minimumAge', 'maximumAge', 'gender'])
+    const data = request.only(['minimumAge', 'maximumAge', 'gender', 'interestIds', 'about'])
 
+    console.log(data)
     if (!auth.user) return response.status(401)
 
     const userId = auth.user.id
 
-    this.UserService.updateBasePreferences(userId, data.minimumAge, data.maximumAge, data.gender)
+    this.UserService.updateBasePreferences(
+      userId,
+      data.minimumAge,
+      data.maximumAge,
+      data.gender,
+      data.interestIds,
+      data.about
+    )
 
     response.status(204)
   }
@@ -80,11 +89,16 @@ export default class UserController {
     const img = request.file('image')
     const isProfile: boolean = request.input('isProfile')
 
+    console.log(img?.size)
+    console.log(isProfile)
+
     const user = auth.user
 
     if (!user) return response.internalServerError()
 
     await this.UserService.addImage(user?.id, img, isProfile)
+
+    return response.status(204)
   }
 
   public async edit({}: HttpContextContract) {}

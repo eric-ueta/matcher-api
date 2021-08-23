@@ -36,6 +36,9 @@ export default class InterestSeeder extends BaseSeeder {
       {
         description: 'Jardinagem',
       },
+      {
+        description: 'Teatro',
+      },
     ])
   }
 }

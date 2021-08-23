@@ -6,7 +6,7 @@ export default class UserSeeder extends BaseSeeder {
   public async run() {
     const uniqueKey = 'email'
 
-    const users = await UserFactory.createMany(30)
+    const users = await UserFactory.createMany(0)
 
     const userArray = users.map((user, index) => {
       return {

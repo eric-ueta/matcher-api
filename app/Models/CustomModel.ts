@@ -14,10 +14,10 @@ export default class CustomModel extends BaseModel {
     await softDelete(this, column)
   }
 
-  @column.dateTime({ autoCreate: true })
+  @column.dateTime({ autoCreate: true, serializeAs: null })
   public createdAt: DateTime
 
-  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  @column.dateTime({ autoCreate: true, autoUpdate: true, serializeAs: null })
   public updatedAt: DateTime
 
   @column({ columnName: 'deleted_at', serializeAs: null })

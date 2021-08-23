@@ -1,4 +1,5 @@
 import Factory from '@ioc:Adonis/Lucid/Factory'
+import Image from 'App/Models/Image'
 import Preference from 'App/Models/Preference'
 import User from 'App/Models/User'
 import { getRandomDate } from 'App/Utils/DateUtil'

@@ -8,4 +8,8 @@ export class StateService {
   public async getCitiesById(id: number) {
     return await State.query().preload('cities').where('id', id)
   }
+
+  public async getAllWithCities() {
+    return await State.query().preload('cities')
+  }
 }

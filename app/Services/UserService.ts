@@ -2,10 +2,11 @@ import User from 'App/Models/User'
 import { NewUser } from 'Contracts/dtos/user/newUser'
 import { makeId } from 'App/Utils/Hash'
 import Preference from 'App/Models/Preference'
-import { subYears } from 'date-fns'
+import { parseJSON, subYears } from 'date-fns'
 import { MultipartFileContract } from '@ioc:Adonis/Core/BodyParser'
 import Application from '@ioc:Adonis/Core/Application'
 import Image from 'App/Models/Image'
+import Interest from 'App/Models/Interest'
 export class UserService {
   /**
    * registerUser
@@ -60,7 +61,9 @@ export class UserService {
     id: number,
     minimumAge: number,
     maximumAge: number,
-    gender: string
+    gender: string,
+    interestIds: Array<number>,
+    about: string
   ) {
     const user = await User.query().preload('preference').where('id', id).firstOrFail()
 
@@ -82,7 +85,11 @@ export class UserService {
       await user.preference.save()
     }
 
+    user.about = about
+
     await user.save()
+
+    await this.updateInterests(id, interestIds)
   }
 
   public async updateInterests(id: number, intererestsIds: Array<number>) {
@@ -108,6 +115,9 @@ export class UserService {
     const acceptedGenders = isBissexual ? ['m', 'f'] : [preferedGender]
 
     const candidates = await User.query()
+      .preload('city')
+      .preload('preference')
+      .preload('images')
       .where('cityId', user.cityId) // mesma cidade do usuario
       .whereIn('gender', acceptedGenders) // usuario aceite genero do candidato
       .whereBetween('birth', [maximumBirthPref, minimumBirthPref]) // usuario aceite idade do candidato
@@ -118,13 +128,13 @@ export class UserService {
           .where('maximumAge', '>=', user.getAge()) // candidato aceite idade do usuario
           .whereIn('gender', [user.gender, 'o']) // candidato aceite genero do usuario (sexo do usuario exato ou bi)
       })
-      // Onde não tenha uma avaliação do usuario em um match iniciado pelo candidato
-      .whereDoesntHave('matchesStarted', (match) => {
-        match.whereInPivot('userTwoId', [user.id]).orWhereNotNullPivot('userOneLiked')
-      })
-      // Onde não tenha um possivel/efetuado match iniciada pelo usuario
+      // Onde usuario nao tenha ja comecado um match
       .whereDoesntHave('matchesRelated', (match) => {
         match.whereInPivot('userOneId', [user.id])
+      })
+      // Onde candidato comecou mas usuario nao avaliou
+      .whereDoesntHave('matchesStarted', (match) => {
+        match.whereNotNullPivot('userTwoLiked')
       })
 
     return candidates
