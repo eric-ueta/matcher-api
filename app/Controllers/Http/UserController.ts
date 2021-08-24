@@ -2,6 +2,7 @@ import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { UserService } from 'App/Services/UserService'
 import { NewUser } from 'Contracts/dtos/user/newUser'
 import CreateUserValidator from 'App/Validators/CreateUserValidator'
+import User from 'App/Models/User'
 
 export default class UserController {
   private UserService: UserService
@@ -108,7 +109,7 @@ export default class UserController {
       'interestIds',
     ])
 
-    const user = auth.user
+    const user = await User.query().preload('preference').where('id', auth.user.id).firstOrFail()
 
     user.about = data.about
     user.phone = data.phone
@@ -120,13 +121,8 @@ export default class UserController {
     user.preference.minimumAge = data.minimumAge
     user.preference.gender = data.gender
 
-    await user?.preference.load('interests')
-
-    await user?.preference.related('interests').detach()
-
-    await user?.preference.save()
-
-    await user?.preference.related('interests').attach(data.interestIds)
+    await user.preference.related('interests').detach() // ¯\_(ツ)_/¯
+    await user.preference.related('interests').attach(data.interestIds)
 
     await user?.preference.save()
   }
