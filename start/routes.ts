@@ -33,7 +33,8 @@ Route.group(() => {
     Route.get('/interest', 'InterestController.index')
 
     Route.group(() => {
-      Route.get('/user/:id', 'UserController.show')
+      Route.get('/user', 'UserController.show')
+      Route.put('/user', 'UserController.update')
       Route.get('/users', 'UserController.index')
       Route.get('/user/candidate/all', 'UserController.getCandidates')
 

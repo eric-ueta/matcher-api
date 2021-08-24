@@ -7,6 +7,7 @@ import { MultipartFileContract } from '@ioc:Adonis/Core/BodyParser'
 import Application from '@ioc:Adonis/Core/Application'
 import Image from 'App/Models/Image'
 import Interest from 'App/Models/Interest'
+import Database from '@ioc:Adonis/Lucid/Database'
 export class UserService {
   /**
    * registerUser
@@ -47,7 +48,11 @@ export class UserService {
   }
 
   public async getUser(id: number) {
-    return await User.query().where('id', id).whereNull('emailToken').first()
+    const user = await User.query().preload('images').preload('preference').where('id', id).first()
+
+    await user?.preference.load('interests')
+
+    return user
   }
 
   public async updateNotificationToken(id: number, notificationToken: string) {

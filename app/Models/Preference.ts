@@ -1,4 +1,5 @@
 import {
+  BaseModel,
   BelongsTo,
   belongsTo,
   column,
@@ -9,11 +10,11 @@ import {
   ManyToMany,
   manyToMany,
 } from '@ioc:Adonis/Lucid/Orm'
-import CustomModel from './CustomModel'
+import { DateTime } from 'luxon'
 import Interest from './Interest'
 import User from './User'
 
-export default class Preference extends CustomModel {
+export default class Preference extends BaseModel {
   public static table = 'preference'
 
   @column({ isPrimary: true })
@@ -40,4 +41,10 @@ export default class Preference extends CustomModel {
 
   @hasOne(() => User)
   public user: HasOne<typeof User>
+
+  @column.dateTime({ autoCreate: true, serializeAs: null })
+  public createdAt: DateTime
+
+  @column.dateTime({ autoCreate: true, autoUpdate: true, serializeAs: null })
+  public updatedAt: DateTime
 }

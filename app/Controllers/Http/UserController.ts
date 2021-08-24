@@ -35,10 +35,8 @@ export default class UserController {
     }
   }
 
-  public async show({ request, response }: HttpContextContract) {
-    const id: number = request.param('id')
-
-    const user = await this.UserService.getUser(id)
+  public async show({ request, response, auth }: HttpContextContract) {
+    const user = await this.UserService.getUser(auth.user?.id)
 
     response.send(user)
   }
@@ -89,9 +87,6 @@ export default class UserController {
     const img = request.file('image')
     const isProfile: boolean = request.input('isProfile')
 
-    console.log(img?.size)
-    console.log(isProfile)
-
     const user = auth.user
 
     if (!user) return response.internalServerError()
@@ -103,7 +98,35 @@ export default class UserController {
 
   public async edit({}: HttpContextContract) {}
 
-  public async update({}: HttpContextContract) {}
+  public async update({ request, auth, response }: HttpContextContract) {
+    const data = request.only([
+      'about',
+      'phone',
+      'gender',
+      'maximumAge',
+      'minimumAge',
+      'interestIds',
+    ])
+
+    const user = auth.user
+
+    user.about = data.about
+    user.phone = data.phone
+
+    await user?.save()
+    await user?.load('preference')
+
+    user.preference.maximumAge = data.maximumAge
+    user.preference.minimumAge = data.minimumAge
+    user.preference.gender = data.gender
+
+    await user?.preference.load('interests')
+
+    await user?.preference.related('interests').detach()
+    await user?.preference.related('interests').attach(data.interestIds)
+
+    await user?.preference.save()
+  }
 
   public async destroy({}: HttpContextContract) {}
 }
