@@ -123,6 +123,9 @@ export default class UserController {
     await user?.preference.load('interests')
 
     await user?.preference.related('interests').detach()
+
+    await user?.preference.save()
+
     await user?.preference.related('interests').attach(data.interestIds)
 
     await user?.preference.save()

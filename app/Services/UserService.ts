@@ -153,7 +153,7 @@ export class UserService {
       newImage.format = img.extname ?? 'jpg'
       newImage.size = img.size
       newImage.userId = id
-      newImage.path = `uploads\\${imgName}`
+      newImage.path = `uploads/${imgName}`
       newImage.isProfile = isProfile
 
       if (isProfile) {
